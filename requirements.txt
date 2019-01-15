@@ -6,5 +6,6 @@ keras
 ipython
 jupyter
 six
-protobuf==3.1.0
+protobuf
 wheel
+matplotlib
