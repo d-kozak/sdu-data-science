@@ -4,11 +4,13 @@ CLEAN = 0
 DIRTY = 1
 
 
+# picture size 257 * 257 * 3 == 154 587
 class ImageData():
     def __init__(self, filename, type):
         self.type = type
         self.filename = filename
-        self.data = misc.imread('images/' + filename)
+        self.data = misc.imread('images/' + filename) \
+            .flatten()
 
     def __str__(self):
         return '(' + self.filename + ',' + str(self.type) + ')'
@@ -27,4 +29,3 @@ def parseDescriptions(filename):
 
 
 desc = parseDescriptions('description_template.txt')
-print(desc)
