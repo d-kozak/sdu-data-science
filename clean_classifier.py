@@ -48,9 +48,9 @@ model = keras.Sequential()
 # todo no matter how many layers are added, the acc is always around 0.666... why?
 model.add(keras.layers.Flatten())
 
-model.add(keras.layers.Dense(4, activation='relu'))
-model.add(keras.layers.Dense(2, activation='relu'))
-
+model.add(keras.layers.Dense(12, activation='relu'))
+model.add(keras.layers.Dense(12, activation='relu'))
+model.add(keras.layers.Dense(12, activation='tanh'))
 model.add(keras.layers.Dense(2, activation='softmax'))
 
 model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
