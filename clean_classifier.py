@@ -45,7 +45,6 @@ test_labels = np.array(labels[train_part + 1:])
 
 model = keras.Sequential()
 
-# todo no matter how many layers are added, the acc is always around 0.666... why?
 model.add(keras.layers.Flatten())
 
 model.add(keras.layers.Dense(12, activation='relu'))
