@@ -9,7 +9,6 @@ class ImageData():
     def __init__(self, filename, type):
         self.type = type
         self.filename = filename
-        self.data = misc.imread('images/' + filename)
 
     def __str__(self):
         return '(' + self.filename + ',' + str(self.type) + ')'

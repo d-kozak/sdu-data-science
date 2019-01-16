@@ -1,20 +1,42 @@
+import os
+
+import imageio
 import keras
 import numpy as np
 
-import sys
-
 from description_parser import parseDescriptions
 
-desc = parseDescriptions('description_template.txt')
+database_folder = './images/database'
+database_images = os.listdir(database_folder)
 
-images = [item.data for item in desc]
-labels = [item.type for item in desc]
+descriptions = parseDescriptions('description_template.txt')
 
-train_images = np.array(images[:40])
-train_labels = np.array(labels[:40])
+output = []
+for description in descriptions:
+    filename = description.filename
+    image_type = description.type
+    file_prefix = filename.split('.')[0] + "_"
+    images = list(filter(lambda name: name.startswith(file_prefix) or name == filename, database_images))
+    print(file_prefix)
+    print(images)
+    print("----")
+    for image in images:
+        data = imageio.imread(database_folder + '/' + image)
+        output.append((image, image_type, data))
 
-test_images = np.array(images[41:])
-test_labels = np.array(labels[41:])
+print(output)
+
+images = [x[2] for x in output]
+labels = [x[1] for x in output]
+
+size = len(images)
+train_part = int(size * 0.7)
+
+train_images = np.array(images[:train_part])
+train_labels = np.array(labels[:train_part])
+
+test_images = np.array(images[train_part + 1:])
+test_labels = np.array(labels[train_part + 1:])
 
 model = keras.Sequential()
 
