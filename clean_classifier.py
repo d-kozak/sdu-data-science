@@ -1,62 +1,77 @@
 import os
+import random
 
 import imageio
 import keras
 import numpy as np
-
-import random
 
 from description_parser import parseDescriptions, file_prefix_from_file_name
 
 database_folder = './images/database'
 database_images = os.listdir(database_folder)
 
-descriptions = parseDescriptions('description_template.txt')
 
-input_data = []
+def prepare_input_data():
+    output = []
+    for description in parseDescriptions('description_template.txt'):
+        filename, image_type = description
+        file_prefix = file_prefix_from_file_name(filename)
+        image_names = list(filter(lambda name: name.startswith(file_prefix) or name == filename, database_images))
+        for image_name in image_names:
+            data = imageio.imread(os.path.join(database_folder, image_name))
+            output.append(
+                {
+                    'name': image_name,
+                    'image_type': image_type,
+                    'data': data
+                }
+            )
+    return output
 
-for description in descriptions:
-    filename, image_type = description
-    file_prefix = file_prefix_from_file_name(filename)
-    image_names = list(filter(lambda name: name.startswith(file_prefix) or name == filename, database_images))
-    for image_name in image_names:
-        data = imageio.imread(os.path.join(database_folder, image_name))
-        input_data.append(
-            {
-                'name': image_name,
-                'image_type': image_type,
-                'data': data
-            }
-        )
 
-random.shuffle(input_data)
+def build_neural_network():
+    model = keras.Sequential()
+    model.add(keras.layers.Flatten())
+    model.add(keras.layers.Dense(12, activation='relu'))
+    model.add(keras.layers.Dense(12, activation='relu'))
+    model.add(keras.layers.Dense(12, activation='tanh'))
+    model.add(keras.layers.Dense(2, activation='softmax'))
+    return model
 
-images = [elem['data'] for elem in input_data]
-labels = [elem['image_type'] for elem in input_data]
 
-size = len(images)
-train_part = int(size * 0.7)
+def split_input_data(input_data):
+    images = [elem['data'] for elem in input_data]
+    labels = [elem['image_type'] for elem in input_data]
 
-train_images = np.array(images[:train_part])
-train_labels = np.array(labels[:train_part])
+    size = len(images)
+    train_part = int(size * 0.7)
 
-test_images = np.array(images[train_part + 1:])
-test_labels = np.array(labels[train_part + 1:])
+    train_images = np.array(images[:train_part])
+    train_labels = np.array(labels[:train_part])
 
-model = keras.Sequential()
+    test_images = np.array(images[train_part + 1:])
+    test_labels = np.array(labels[train_part + 1:])
+    return (train_images, train_labels), (test_images, test_labels)
 
-model.add(keras.layers.Flatten())
 
-model.add(keras.layers.Dense(12, activation='relu'))
-model.add(keras.layers.Dense(12, activation='relu'))
-model.add(keras.layers.Dense(12, activation='tanh'))
-model.add(keras.layers.Dense(2, activation='softmax'))
+def evaluate_model(model, test_images, test_labels, train_images, train_labels):
+    model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+    model.fit(train_images, train_labels, epochs=10)
+    return model.evaluate(test_images, test_labels)
 
-model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
-# train it using labeled training data
-model.fit(train_images, train_labels, epochs=10)
+def main():
+    input_data = prepare_input_data()
+    random.shuffle(input_data)
 
-val_loss, val_acc = model.evaluate(test_images, test_labels)
-print('Loss value ' + str(val_loss))
-print('Accuracy ' + str(val_acc))
+    ((train_images, train_labels), (test_images, test_labels)) = split_input_data(input_data)
+
+    model = build_neural_network()
+
+    val_loss, val_acc = evaluate_model(model, test_images, test_labels, train_images, train_labels)
+    print('Loss value ' + str(val_loss))
+    print('Accuracy ' + str(val_acc))
+
+
+if __name__ == '__main__':
+    main()
