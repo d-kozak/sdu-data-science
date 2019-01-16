@@ -1,5 +1,3 @@
-from scipy import misc
-
 CLEAN = 0
 DIRTY = 1
 
@@ -16,6 +14,13 @@ class ImageData():
     def __repr__(self):
         return str(self)
 
+    def __iter__(self):
+        for item in [self.filename, self.type]:
+            yield item
+
+
+def file_prefix_from_file_name(filename):
+    return filename.split('.')[0] + "_"
 
 def parseDescriptions(filename):
     desciptions = []

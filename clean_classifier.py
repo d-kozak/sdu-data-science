@@ -4,30 +4,32 @@ import imageio
 import keras
 import numpy as np
 
-from description_parser import parseDescriptions
+from description_parser import parseDescriptions, file_prefix_from_file_name
 
 database_folder = './images/database'
 database_images = os.listdir(database_folder)
 
 descriptions = parseDescriptions('description_template.txt')
 
-output = []
+input_data = []
+
 for description in descriptions:
-    filename = description.filename
-    image_type = description.type
-    file_prefix = filename.split('.')[0] + "_"
-    images = list(filter(lambda name: name.startswith(file_prefix) or name == filename, database_images))
-    print(file_prefix)
-    print(images)
-    print("----")
-    for image in images:
-        data = imageio.imread(database_folder + '/' + image)
-        output.append((image, image_type, data))
+    filename, image_type = description
+    file_prefix = file_prefix_from_file_name(filename)
+    image_names = list(filter(lambda name: name.startswith(file_prefix) or name == filename, database_images))
+    print('Prefix %s, found images %s' % (file_prefix, image_names))
+    for image_name in image_names:
+        data = imageio.imread(os.path.join(database_folder, image_name))
+        input_data.append(
+            {
+                'name': image_name,
+                'image_type': image_type,
+                'data': data
+            }
+        )
 
-print(output)
-
-images = [x[2] for x in output]
-labels = [x[1] for x in output]
+images = [elem['data'] for elem in input_data]
+labels = [elem['image_type'] for elem in input_data]
 
 size = len(images)
 train_part = int(size * 0.7)
