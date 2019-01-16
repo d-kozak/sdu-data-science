@@ -4,13 +4,12 @@ CLEAN = 0
 DIRTY = 1
 
 
-# picture size 257 * 257 * 3 == 154 587
+# picture size 227 * 227 * 3 == 154 587
 class ImageData():
     def __init__(self, filename, type):
         self.type = type
         self.filename = filename
-        self.data = misc.imread('images/' + filename) \
-            .flatten()
+        self.data = misc.imread('images/' + filename)
 
     def __str__(self):
         return '(' + self.filename + ',' + str(self.type) + ')'
