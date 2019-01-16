@@ -4,6 +4,8 @@ import imageio
 import keras
 import numpy as np
 
+import random
+
 from description_parser import parseDescriptions, file_prefix_from_file_name
 
 database_folder = './images/database'
@@ -17,7 +19,6 @@ for description in descriptions:
     filename, image_type = description
     file_prefix = file_prefix_from_file_name(filename)
     image_names = list(filter(lambda name: name.startswith(file_prefix) or name == filename, database_images))
-    print('Prefix %s, found images %s' % (file_prefix, image_names))
     for image_name in image_names:
         data = imageio.imread(os.path.join(database_folder, image_name))
         input_data.append(
@@ -27,6 +28,8 @@ for description in descriptions:
                 'data': data
             }
         )
+
+random.shuffle(input_data)
 
 images = [elem['data'] for elem in input_data]
 labels = [elem['image_type'] for elem in input_data]
