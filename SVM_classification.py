@@ -2,12 +2,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 from skimage import io
 
-classes = {'wall': 0, 'polyp': 1, 'dirt': 2, 'dark': 3, 'hole': 4, 'bubbles': 5}
+classes = {'wall': 0, 'polyp': 1, 'dirt': 2, 'dark': 3, 'hole': 4}
 n_classes = len(classes)
-palette = np.uint8([[0, 255, 0], [255, 0, 0], [0, 0, 255], [0, 0, 0], [128,128,128], [255,255,255]])
+palette = np.uint8([[0, 255, 0], [255, 0, 0], [0, 0, 255], [0, 0, 0], [128,128,128]])
 
-img = io.imread('images/1.jpg')
-img2 = io.imread('images/1.jpg')
+img = io.imread('images/001.jpg')
+img2 = io.imread('images/001.jpg')
 rows, cols, bands = img.shape
 
 from sklearn.cluster import KMeans
@@ -19,8 +19,7 @@ supervised[140:162, 29:50] = classes['polyp']
 supervised[20:35, 170:185] = classes['wall']
 #supervised[0:0, 0:0] = classes['dirt']
 supervised[0:10, 0:10] = classes['dark']
-supervised[165:190, 80:100] = classes['hole']
-#supervised[0:0, 0:0] = classes['bubbles']
+supervised[165:180, 80:100] = classes['hole']
 
 y = supervised.ravel()
 train = np.flatnonzero(supervised < n_classes)
@@ -37,4 +36,4 @@ plt.show()
 plt.imshow(palette[supervised], cmap=plt.cm.binary)
 plt.show()
 
-supervised_001 = supervised
+
