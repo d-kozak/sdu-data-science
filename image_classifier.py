@@ -17,7 +17,7 @@ def prepare_input_data():
         output.append(
             {
                 'name': 'foo',
-                'image_type': np.zeros((227, 227, 3), dtype=np.uint8),
+                'image_type': np.zeros(shape=(223, 223, 1), dtype=np.uint8),  # np.zeros((227, 227, 3), dtype=np.uint8),
                 'data': image
             }
         )
@@ -25,11 +25,6 @@ def prepare_input_data():
 
 
 def split_input_data(input_data):
-    for elem in input_data:
-        assert len(elem['data']) == len(elem['image_type'])
-        assert len(elem['data'][0]) == len(elem['image_type'][0])
-        assert len(elem['data'][0][0]) == len(elem['image_type'][0][0])
-
     images = [elem['data'] for elem in input_data]
     labels = [elem['image_type'] for elem in input_data]
 
@@ -44,20 +39,28 @@ def split_input_data(input_data):
     return (train_images, train_labels), (test_images, test_labels)
 
 
-def build_neural_network():
-    model = keras.Sequential()
+tmp = keras.layers.Dense(1)
 
+
+def build_neural_network():
+    global tmp
+    model = keras.Sequential()
+    model.add(keras.layers.Conv2D(32, (3, 3), input_shape=(227, 227, 3)))
+    model.add(keras.layers.Conv2D(8, (3, 3)))
+    model.add(keras.layers.Dense(10))
+    model.add(tmp)
+    # model.add(keras.layers.Convolution2D(32, (3, 3), input_shape=(227, 227, 3)))
     # model.add(keras.layers.Flatten())
+
     # model.add(keras.layers.Reshape(target_shape=(227, 227, 3)))
-    # model.add(keras.layers.Conv2D(32, (3, 3), input_shape=(227, 227, 3)))
-    model.add(keras.layers.Convolution2D(32, (3, 3), input_shape=(227, 227, 3)))
-    model.add(keras.layers.Reshape(target_shape=(227, 227, 3)))
 
     return model
 
 
 def evaluate_model(model, test_images, test_labels, train_images, train_labels):
     model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+    print('shape: ')
+    print(tmp.output_shape)
     model.fit(train_images, train_labels, epochs=10)
     return model.evaluate(test_images, test_labels)
 
