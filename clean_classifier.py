@@ -2,6 +2,8 @@ import os
 
 import imageio
 import keras
+from keras.layers import Conv2D, MaxPooling2D, BatchNormalization
+from keras.layers import Dense, Dropout, Flatten
 import numpy as np
 
 from description_parser import parseDescriptions, file_prefix_from_file_name
@@ -31,11 +33,25 @@ def prepare_input_data():
 
 def build_neural_network():
     model = keras.Sequential()
-    model.add(keras.layers.Flatten())
-    model.add(keras.layers.Dense(12, activation='relu'))
-    model.add(keras.layers.Dense(12, activation='relu'))
-    model.add(keras.layers.Dense(12, activation='tanh'))
-    model.add(keras.layers.Dense(2, activation='softmax'))
+    model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=(227, 227, 3)))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(BatchNormalization())
+    model.add(Conv2D(64, kernel_size=(3, 3), activation='relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(BatchNormalization())
+    model.add(Conv2D(64, kernel_size=(3,3), activation='relu'))
+    model.add(MaxPooling2D(pool_size=(2,2)))
+    model.add(BatchNormalization())
+    model.add(Conv2D(96, kernel_size=(3,3), activation='relu'))
+    model.add(MaxPooling2D(pool_size=(2,2)))
+    model.add(BatchNormalization())
+    model.add(Conv2D(32, kernel_size=(3,3), activation='relu'))
+    model.add(MaxPooling2D(pool_size=(2,2)))
+    model.add(BatchNormalization())
+    model.add(Dropout(0.2))
+    model.add(Flatten())
+    model.add(Dense(128, activation='relu'))
+    model.add(Dense(2, activation = 'softmax'))
     return model
 
 

@@ -6,7 +6,7 @@ images_names_array = [name for name in os.listdir(images_directory) if os.path.i
 
 print('\nThere are ' + str(len(images_names_array)) + ' images as a source for database.\n')
 
-# check (and create if necessary) output folder rotated images
+# check (and create if necessary) output folder for database images
 output_directory = "./images/database"
 if not os.path.exists(output_directory):
     os.makedirs(output_directory)
