@@ -3,6 +3,7 @@
 
 .idea/**
 nums.model
+/images/database/
 
 # File-based project format
 *.iws
