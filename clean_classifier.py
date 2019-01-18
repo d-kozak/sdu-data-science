@@ -73,7 +73,7 @@ def split_input_data(input_data):
 
 def evaluate_model(model, test_images, test_labels, train_images, train_labels):
     model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
-    model.fit(train_images, train_labels, epochs=10)
+    model.fit(train_images, train_labels, epochs=8)
     return model.evaluate(test_images, test_labels)
 
 
