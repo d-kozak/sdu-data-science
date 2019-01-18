@@ -10,8 +10,8 @@ def run_neural_network(prepare_input_data, split_input_data, build_neural_networ
 
     images = [elem['data'] for elem in input_data]
     labels = [elem['image_type'] for elem in input_data]
-    images = np.array(images[:len(images)])
-    labels = np.array(labels[:len(labels)])
+    images = np.array(images)
+    labels = np.array(labels)
 
     kfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=None)
     cvscores = []
