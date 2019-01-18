@@ -19,7 +19,7 @@ def prepare_input_data():
 
     output = []
     input_images = load_images_from_folder(database_folder)
-    ground_truth = dict(map(remove_svm_from_name, input_images))
+    ground_truth = dict(map(remove_svm_from_name, load_images_from_folder(ground_truth_folder)))
 
     for (image_name, image_data) in input_images:
         image_output = ground_truth[image_name]
@@ -97,6 +97,8 @@ for i in range(len(predictions)):
     img_in = train_images[i]
     img_out = predictions[i]
 
+    img_label = train_labels[i]
+
     img_out = scale_image(img_out)
 
     f = plt.figure()
@@ -104,4 +106,6 @@ for i in range(len(predictions)):
     plt.imshow(img_in)
     f.add_subplot(1, 2, 2)
     plt.imshow(img_out)
+    f.add_subplot(1, 2, 3)
+    plt.imshow(img_label)
     plt.show(block=True)
