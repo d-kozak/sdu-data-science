@@ -18,7 +18,7 @@ def prepare_input_data():
         output.append(
             {
                 'name': 'foo',
-                'image_type': np.zeros(shape=(220, 220, 3), dtype=np.uint8),  # np.zeros((227, 227, 3), dtype=np.uint8),
+                'image_type': np.zeros(shape=(223, 223, 3), dtype=np.uint8),  # np.zeros((227, 227, 3), dtype=np.uint8),
                 'data': image
             }
         )
@@ -47,7 +47,7 @@ def build_neural_network():
     model.add(keras.layers.Conv2D(3, (3, 3)))
     model.add(keras.layers.MaxPooling2D(pool_size=(2, 2)))
     model.add(keras.layers.UpSampling2D(size=(4, 4)))
-
+    model.add(keras.layers.Deconv2D(3, (4, 4)))
     return model
 
 
