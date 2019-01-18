@@ -2,8 +2,6 @@ import os, os.path
 from PIL import Image, ImageOps
 
 images_directory = './images'
-print( [name for name in os.listdir(images_directory)
-                      if os.path.isfile(os.path.join(images_directory, name))])
 images_names_array = [name for name in os.listdir(images_directory)
                       if os.path.isfile(os.path.join(images_directory, name)) and
                       len(name.split('_')) == 2]
