@@ -15,16 +15,22 @@ def run_neural_network(prepare_input_data, split_input_data, build_neural_networ
 
     kfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=None)
     cvscores = []
+    cvlosses = []
+    i = 0
 
     for train, test in kfold.split(images, labels):
+        i += 1
+        print("cross validation: ", i)
         model = build_neural_network()
 
         val_loss, val_acc = evaluate_model(model, images[test], labels[test], images[train], labels[train])
         print('Loss value ' + str(val_loss))
         print('Accuracy ' + str(val_acc))
 
-        scores = model.evaluate(images[test], labels[test], verbose=0)
-        print("%s: %.2f%%" % (model.metrics_names[1], scores[1] * 100))
-        cvscores.append(scores[1] * 100)
+        cvscores.append(val_acc * 100)
+        cvlosses.append(val_loss)
+
     print("%.2f%% (+/- %.2f%%)" % (np.mean(cvscores), np.std(cvscores)))
-    return model, val_loss, val_acc
+    print("%.2f (+/- %.2f)" % (np.mean(cvlosses), np.std(cvlosses)))
+
+    return model
