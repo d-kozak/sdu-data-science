@@ -3,11 +3,8 @@ import random
 
 import imageio
 import keras
-from keras.models import load_model
-import tensorflow as tf
-import numpy as np
-
 import matplotlib.pyplot as plt
+import numpy as np
 
 database_folder = './images/database'
 
@@ -66,26 +63,16 @@ def scale_image(image):
     return (image + min) / (max + min)
 
 
-model = None
-train_model = False
-model_name = 'black.model'
-
 input_data = prepare_input_data()
 random.shuffle(input_data)
 
 ((train_images, train_labels), (test_images, test_labels)) = split_input_data(input_data)
 
-if train_model:
-    print('training...')
-    model = build_neural_network()
+model = build_neural_network()
 
-    val_loss, val_acc = evaluate_model(model, test_images, test_labels, train_images, train_labels)
-    print('Loss value ' + str(val_loss))
-    print('Accuracy ' + str(val_acc))
-    model.save(model_name)
-else:
-    print('loading...')
-    model = load_model(model_name)
+val_loss, val_acc = evaluate_model(model, test_images, test_labels, train_images, train_labels)
+print('Loss value ' + str(val_loss))
+print('Accuracy ' + str(val_acc))
 
 predictions = model.predict(train_images)
 
