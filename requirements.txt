@@ -5,3 +5,4 @@ keras
 matplotlib
 Pillow
 imageio
+sklearn
