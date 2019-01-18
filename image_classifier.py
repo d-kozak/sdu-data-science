@@ -1,33 +1,50 @@
 import os
-import random
 
 import imageio
 import keras
-import matplotlib.pyplot as plt
 import numpy as np
+import sys
+
+import random
+import matplotlib.pyplot as plt
 
 database_folder = './images/database'
+ground_truth_folder = './images/ground_truth'
 
 
 def prepare_input_data():
-    output = []
-    images = list(
-        map(lambda image_name: imageio.imread(os.path.join(database_folder, image_name)), os.listdir(database_folder)))
+    def remove_svm_from_name(input):
+        name, data = input
+        return name.replace('SVM_', ''), data
 
-    for image in images:
+    output = []
+    input_images = load_images_from_folder(database_folder)
+    ground_truth = dict(map(remove_svm_from_name, input_images))
+
+    for (image_name, image_data) in input_images:
+        image_output = ground_truth[image_name]
+        if image_output is None:
+            raise RuntimeError('Could not find image ' + image_name)
+
         output.append(
             {
-                'name': 'foo',
-                'image_type': np.zeros(shape=(223, 223, 3), dtype=np.uint8),  # np.zeros((227, 227, 3), dtype=np.uint8),
-                'data': image
+                'name': image_name,
+                'output': image_output,
+                'input': image_data
             }
         )
     return output
 
 
+def load_images_from_folder(folder_name):
+    return list(
+        map(lambda image_name: (
+            image_name, imageio.imread(os.path.join(folder_name, image_name))), os.listdir(folder_name)))
+
+
 def split_input_data(input_data):
-    images = [elem['data'] for elem in input_data]
-    labels = [elem['image_type'] for elem in input_data]
+    images = [elem['input'] for elem in input_data]
+    labels = [elem['output'] for elem in input_data]
 
     size = len(images)
     train_part = int(size * 0.7)
@@ -47,7 +64,7 @@ def build_neural_network():
     model.add(keras.layers.Conv2D(3, (3, 3)))
     model.add(keras.layers.MaxPooling2D(pool_size=(2, 2)))
     model.add(keras.layers.UpSampling2D(size=(4, 4)))
-    model.add(keras.layers.Deconv2D(3, (4, 4)))
+    model.add(keras.layers.Deconv2D(3, (8, 8)))
     return model
 
 
