@@ -4,6 +4,7 @@ from skimage import io
 import imageio
 from sklearn.cluster import KMeans
 from sklearn.svm import SVC
+import os
 
 plt.close('all')
 # #1----------------------------------------------------------------------------------------------------------
@@ -1833,3 +1834,5 @@ imageio.imwrite('./images/3_SVM.jpg',palette[supervised])
 #
 # supervised_50 = supervised
 # imageio.imwrite('./images/50_SVM.jpg',palette[supervised])
+
+os.system("ground_truth_generator.py")
