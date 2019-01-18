@@ -1,32 +1,50 @@
 import os
-import random
 
 import imageio
 import keras
 import numpy as np
+import sys
+
+import random
+import matplotlib.pyplot as plt
 
 database_folder = './images/database'
+ground_truth_folder = './images/ground_truth'
 
 
 def prepare_input_data():
-    output = []
-    images = list(
-        map(lambda image_name: imageio.imread(os.path.join(database_folder, image_name)), os.listdir(database_folder)))
+    def remove_svm_from_name(input):
+        name, data = input
+        return name.replace('SVM_', ''), data
 
-    for image in images:
+    output = []
+    input_images = load_images_from_folder(database_folder)
+    ground_truth = dict(map(remove_svm_from_name, input_images))
+
+    for (image_name, image_data) in input_images:
+        image_output = ground_truth[image_name]
+        if image_output is None:
+            raise RuntimeError('Could not find image ' + image_name)
+
         output.append(
             {
-                'name': 'foo',
-                'image_type': np.zeros(shape=(223, 223, 1), dtype=np.uint8),  # np.zeros((227, 227, 3), dtype=np.uint8),
-                'data': image
+                'name': image_name,
+                'output': image_output,
+                'input': image_data
             }
         )
     return output
 
 
+def load_images_from_folder(folder_name):
+    return list(
+        map(lambda image_name: (
+            image_name, imageio.imread(os.path.join(folder_name, image_name))), os.listdir(folder_name)))
+
+
 def split_input_data(input_data):
-    images = [elem['data'] for elem in input_data]
-    labels = [elem['image_type'] for elem in input_data]
+    images = [elem['input'] for elem in input_data]
+    labels = [elem['output'] for elem in input_data]
 
     size = len(images)
     train_part = int(size * 0.7)
@@ -39,30 +57,27 @@ def split_input_data(input_data):
     return (train_images, train_labels), (test_images, test_labels)
 
 
-tmp = keras.layers.Dense(1)
-
-
 def build_neural_network():
-    global tmp
     model = keras.Sequential()
     model.add(keras.layers.Conv2D(32, (3, 3), input_shape=(227, 227, 3)))
-    model.add(keras.layers.Conv2D(8, (3, 3)))
-    model.add(keras.layers.Dense(10))
-    model.add(tmp)
-    # model.add(keras.layers.Convolution2D(32, (3, 3), input_shape=(227, 227, 3)))
-    # model.add(keras.layers.Flatten())
-
-    # model.add(keras.layers.Reshape(target_shape=(227, 227, 3)))
-
+    model.add(keras.layers.MaxPooling2D(pool_size=(2, 2)))
+    model.add(keras.layers.Conv2D(3, (3, 3)))
+    model.add(keras.layers.MaxPooling2D(pool_size=(2, 2)))
+    model.add(keras.layers.UpSampling2D(size=(4, 4)))
+    model.add(keras.layers.Deconv2D(3, (8, 8)))
     return model
 
 
 def evaluate_model(model, test_images, test_labels, train_images, train_labels):
-    model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
-    print('shape: ')
-    print(tmp.output_shape)
-    model.fit(train_images, train_labels, epochs=10)
+    model.compile(optimizer='adam', loss='mean_squared_error', metrics=['accuracy'])
+    model.fit(train_images, train_labels, epochs=3)
     return model.evaluate(test_images, test_labels)
+
+
+def scale_image(image):
+    max = np.max(image)
+    min = np.abs(np.min(image))
+    return (image + min) / (max + min)
 
 
 input_data = prepare_input_data()
@@ -75,3 +90,18 @@ model = build_neural_network()
 val_loss, val_acc = evaluate_model(model, test_images, test_labels, train_images, train_labels)
 print('Loss value ' + str(val_loss))
 print('Accuracy ' + str(val_acc))
+
+predictions = model.predict(train_images)
+
+for i in range(len(predictions)):
+    img_in = train_images[i]
+    img_out = predictions[i]
+
+    img_out = scale_image(img_out)
+
+    f = plt.figure()
+    f.add_subplot(1, 2, 1)
+    plt.imshow(img_in)
+    f.add_subplot(1, 2, 2)
+    plt.imshow(img_out)
+    plt.show(block=True)
