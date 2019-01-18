@@ -15,7 +15,7 @@ ground_truth_folder = './images/ground_truth'
 def prepare_input_data():
     def remove_svm_from_name(input):
         name, data = input
-        return name.replace('SVM_', ''), data
+        return name.replace('_SVM', ''), data
 
     output = []
     input_images = load_images_from_folder(database_folder)
@@ -91,21 +91,22 @@ val_loss, val_acc = evaluate_model(model, test_images, test_labels, train_images
 print('Loss value ' + str(val_loss))
 print('Accuracy ' + str(val_acc))
 
+model.save('model')
+
 predictions = model.predict(train_images)
 
 for i in range(len(predictions)):
     img_in = train_images[i]
-    img_out = predictions[i]
-
     img_label = train_labels[i]
 
+    img_out = predictions[i]
     img_out = scale_image(img_out)
 
     f = plt.figure()
-    f.add_subplot(1, 2, 1)
+    f.add_subplot(1, 3, 1)
     plt.imshow(img_in)
-    f.add_subplot(1, 2, 2)
-    plt.imshow(img_out)
-    f.add_subplot(1, 2, 3)
+    f.add_subplot(1, 3, 2)
     plt.imshow(img_label)
+    f.add_subplot(1, 3, 3)
+    plt.imshow(img_out)
     plt.show(block=True)
