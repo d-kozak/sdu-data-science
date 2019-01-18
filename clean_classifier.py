@@ -51,6 +51,7 @@ def build_neural_network():
     model.add(Dropout(0.2))
     model.add(Flatten())
     model.add(Dense(128, activation='relu'))
+    model.add(Dropout(0.3))
     model.add(Dense(2, activation = 'softmax'))
     return model
 
