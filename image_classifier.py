@@ -35,10 +35,9 @@ def prepare_input_data():
 
 
 def load_images_from_folder(folder_name):
-    #image_name, keras.utils.normalize(imageio.imread(os.path.join(folder_name, image_name)), axis=1)),
     return list(
         map(lambda image_name: (
-            image_name, imageio.imread(os.path.join(folder_name, image_name))),
+            image_name, imageio.imread(os.path.join(folder_name, image_name)) / 255),
             os.listdir(folder_name)))
 
 
@@ -59,24 +58,36 @@ def split_input_data(input_data):
 
 def build_neural_network():
     model = keras.Sequential()
-    model.add(keras.layers.ZeroPadding2D(padding=(1,1)))
-    model.add(keras.layers.Conv2D(64, (3, 3)))
     model.add(keras.layers.ZeroPadding2D(padding=(1, 1)))
-    model.add(keras.layers.Conv2D(32, (3, 3)))
+    model.add(keras.layers.Conv2D(128, (3, 3), activation='sigmoid'))
     model.add(keras.layers.ZeroPadding2D(padding=(1, 1)))
-    model.add(keras.layers.Conv2D(16, (3, 3)))
+    model.add(keras.layers.Conv2D(64, (3, 3), activation='sigmoid'))
+    model.add(keras.layers.MaxPooling2D(pool_size=(2, 2)))
     model.add(keras.layers.ZeroPadding2D(padding=(1, 1)))
-    model.add(keras.layers.Conv2D(3, (3, 3)))
-    # model.add(keras.layers.MaxPooling2D(pool_size=(2, 2)))
-    # model.add(keras.layers.Conv2D(3, (3, 3)))
-    # model.add(keras.layers.MaxPooling2D(pool_size=(2, 2)))
-    # model.add(keras.layers.UpSampling2D(size=(4, 4)))
-    # model.add(keras.layers.Deconv2D(3, (8, 8)))
+    model.add(keras.layers.Conv2D(32, (3, 3), activation='sigmoid'))
+    model.add(keras.layers.ZeroPadding2D(padding=(1, 1)))
+    model.add(keras.layers.Conv2D(16, (3, 3), activation='sigmoid'))
+
+    model.add(keras.layers.Flatten())
+
+    model.add(keras.layers.Dense(300))
+    model.add(keras.layers.Dense(200))
+    model.add(keras.layers.Dense(100))
+
+    model.add(keras.layers.Dense(36300))
+    model.add(keras.layers.Reshape(target_shape=(110, 110, 3)))
+
+    model.add(keras.layers.UpSampling2D(size=(2, 2)))
+    model.add(keras.layers.Deconv2D(3, (8, 8)))
+    # model.add(keras.layers.UpSampling2D(size=(2, 2)))
+    # model.add(keras.layers.Conv2D(3, (2, 2), activation='sigmoid'))
+    #
+    # model.add(keras.layers.ZeroPadding2D(padding=(1, 1)))
     return model
 
 
 def evaluate_model(model, test_images, test_labels, train_images, train_labels):
-    model.compile(optimizer='adam', loss='mean_squared_error', metrics=['accuracy'])
+    model.compile(optimizer='adam', loss=keras.losses.mean_absolute_error, metrics=['accuracy'])
     model.fit(train_images, train_labels, epochs=3)
     return model.evaluate(test_images, test_labels)
 
