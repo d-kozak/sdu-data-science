@@ -1,12 +1,10 @@
 import os
+import random
 
 import imageio
 import keras
-import numpy as np
-import sys
-
-import random
 import matplotlib.pyplot as plt
+import numpy as np
 
 database_folder = './images/database'
 ground_truth_folder = './images/ground_truth'
@@ -37,9 +35,11 @@ def prepare_input_data():
 
 
 def load_images_from_folder(folder_name):
+    #image_name, keras.utils.normalize(imageio.imread(os.path.join(folder_name, image_name)), axis=1)),
     return list(
         map(lambda image_name: (
-            image_name, imageio.imread(os.path.join(folder_name, image_name))), os.listdir(folder_name)))
+            image_name, imageio.imread(os.path.join(folder_name, image_name))),
+            os.listdir(folder_name)))
 
 
 def split_input_data(input_data):
@@ -59,12 +59,19 @@ def split_input_data(input_data):
 
 def build_neural_network():
     model = keras.Sequential()
-    model.add(keras.layers.Conv2D(32, (3, 3), input_shape=(227, 227, 3)))
-    model.add(keras.layers.MaxPooling2D(pool_size=(2, 2)))
+    model.add(keras.layers.ZeroPadding2D(padding=(1,1)))
+    model.add(keras.layers.Conv2D(64, (3, 3)))
+    model.add(keras.layers.ZeroPadding2D(padding=(1, 1)))
+    model.add(keras.layers.Conv2D(32, (3, 3)))
+    model.add(keras.layers.ZeroPadding2D(padding=(1, 1)))
+    model.add(keras.layers.Conv2D(16, (3, 3)))
+    model.add(keras.layers.ZeroPadding2D(padding=(1, 1)))
     model.add(keras.layers.Conv2D(3, (3, 3)))
-    model.add(keras.layers.MaxPooling2D(pool_size=(2, 2)))
-    model.add(keras.layers.UpSampling2D(size=(4, 4)))
-    model.add(keras.layers.Deconv2D(3, (8, 8)))
+    # model.add(keras.layers.MaxPooling2D(pool_size=(2, 2)))
+    # model.add(keras.layers.Conv2D(3, (3, 3)))
+    # model.add(keras.layers.MaxPooling2D(pool_size=(2, 2)))
+    # model.add(keras.layers.UpSampling2D(size=(4, 4)))
+    # model.add(keras.layers.Deconv2D(3, (8, 8)))
     return model
 
 
