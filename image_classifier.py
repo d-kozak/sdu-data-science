@@ -58,37 +58,36 @@ def split_input_data(input_data):
 
 def build_neural_network():
     model = keras.Sequential()
-    model.add(keras.layers.ZeroPadding2D(padding=(1, 1)))
-    model.add(keras.layers.Conv2D(128, (3, 3), activation='sigmoid'))
-    model.add(keras.layers.ZeroPadding2D(padding=(1, 1)))
-    model.add(keras.layers.Conv2D(64, (3, 3), activation='sigmoid'))
+    model.add(keras.layers.Conv2D(128, (3, 3), activation='relu', padding='same'))
+    model.add(keras.layers.Conv2D(64, (3, 3), activation='relu', padding='same'))
     model.add(keras.layers.MaxPooling2D(pool_size=(2, 2)))
-    model.add(keras.layers.ZeroPadding2D(padding=(1, 1)))
-    model.add(keras.layers.Conv2D(32, (3, 3), activation='sigmoid'))
-    model.add(keras.layers.ZeroPadding2D(padding=(1, 1)))
-    model.add(keras.layers.Conv2D(16, (3, 3), activation='sigmoid'))
+    model.add(keras.layers.Conv2D(32, (3, 3), activation='relu', padding='same'))
+    model.add(keras.layers.Conv2D(16, (3, 3), activation='sigmoid', padding='same'))
+    model.add(keras.layers.MaxPooling2D(pool_size=(2, 2)))
 
     model.add(keras.layers.Flatten())
 
-    model.add(keras.layers.Dense(300))
-    model.add(keras.layers.Dense(200))
-    model.add(keras.layers.Dense(100))
+    model.add(keras.layers.Dense(50))
+    model.add(keras.layers.Dense(30))
+    model.add(keras.layers.Dense(10))
+    #model.add(keras.layers.Dense(75))
 
     model.add(keras.layers.Dense(36300))
     model.add(keras.layers.Reshape(target_shape=(110, 110, 3)))
 
     model.add(keras.layers.UpSampling2D(size=(2, 2)))
-    model.add(keras.layers.Deconv2D(3, (8, 8)))
+    model.add(keras.layers.Deconv2D(3,(8,8)))
     # model.add(keras.layers.UpSampling2D(size=(2, 2)))
     # model.add(keras.layers.Conv2D(3, (2, 2), activation='sigmoid'))
     #
     # model.add(keras.layers.ZeroPadding2D(padding=(1, 1)))
+
     return model
 
 
 def evaluate_model(model, test_images, test_labels, train_images, train_labels):
     model.compile(optimizer='adam', loss=keras.losses.mean_absolute_error, metrics=['accuracy'])
-    model.fit(train_images, train_labels, epochs=3)
+    model.fit(train_images, train_labels, epochs=7)
     return model.evaluate(test_images, test_labels)
 
 
@@ -109,13 +108,14 @@ val_loss, val_acc = evaluate_model(model, test_images, test_labels, train_images
 print('Loss value ' + str(val_loss))
 print('Accuracy ' + str(val_acc))
 
+model.summary()
 model.save('model')
 
-predictions = model.predict(train_images)
+predictions = model.predict(test_images)
 
 for i in range(len(predictions)):
-    img_in = train_images[i]
-    img_label = train_labels[i]
+    img_in = test_images[i]
+    img_label = test_labels[i]
 
     img_out = predictions[i]
     img_out = scale_image(img_out)
