@@ -17,25 +17,26 @@ def build_neural_network():
     model.add(keras.layers.Conv2D(64, (3, 3), activation='relu', padding='same'))
     model.add(keras.layers.MaxPooling2D(pool_size=(2, 2)))
     model.add(keras.layers.Conv2D(32, (3, 3), activation='relu', padding='same'))
-    model.add(keras.layers.Conv2D(16, (3, 3), activation='sigmoid', padding='same'))
+    model.add(keras.layers.Conv2D(16, (3, 3), activation='relu', padding='same'))
+    model.add(keras.layers.MaxPooling2D(pool_size=(2, 2)))
+
+    model.add(keras.layers.Conv2D(8, (3, 3), activation='relu', padding='same'))
+    model.add(keras.layers.Conv2D(8, (3, 3), activation='relu', padding='same'))
+    model.add(keras.layers.MaxPooling2D(pool_size=(2, 2)))
+    model.add(keras.layers.Conv2D(8, (3, 3), activation='relu', padding='same'))
+    model.add(keras.layers.Conv2D(4, (3, 3), activation='sigmoid', padding='same'))
     model.add(keras.layers.MaxPooling2D(pool_size=(2, 2)))
 
     model.add(keras.layers.Flatten())
 
     model.add(keras.layers.Dense(50))
-    model.add(keras.layers.Dense(30))
-    model.add(keras.layers.Dense(10))
-    # model.add(keras.layers.Dense(75))
+    model.add(keras.layers.Dense(50))
+    model.add(keras.layers.Dense(50))
 
     model.add(keras.layers.Dense(36300))
     model.add(keras.layers.Reshape(target_shape=(110, 110, 3)))
 
-    model.add(keras.layers.UpSampling2D(size=(2, 2)))
-    model.add(keras.layers.Deconv2D(3, (8, 8)))
     # model.add(keras.layers.UpSampling2D(size=(2, 2)))
-    # model.add(keras.layers.Conv2D(3, (2, 2), activation='sigmoid'))
-    #
-    # model.add(keras.layers.ZeroPadding2D(padding=(1, 1)))
 
     return model
 
@@ -44,8 +45,8 @@ def evaluate_model(model, test_images, test_labels, train_images, train_labels):
     def loss_function(y_true, y_pred):
         return K.mean(K.abs(y_pred - y_true), axis=-1)
 
-    model.compile(optimizer='adam', loss=keras.losses.mean_absolute_error, metrics=['accuracy'])
-    model.fit(train_images, train_labels, epochs=7)
+    model.compile(optimizer='adam', loss=keras.losses.mean_squared_error, metrics=['accuracy'])
+    model.fit(train_images, train_labels, epochs=100)
     return model.evaluate(test_images, test_labels)
 
 input_data = prepare_input_data()
@@ -86,4 +87,4 @@ for i in range(len(predictions)):
     plt.imshow(img_out)
 
     plt.savefig(os.path.join(output_folder, str(i) + '.png'))
-    plt.show(block=True)
+    plt.close(f)

@@ -14,6 +14,10 @@ database_images = os.listdir(database_folder)
 
 
 def prepare_input_data():
+    """
+    Loads data from description_template.txt file, which contains labels for the images, and the associated images described in the file.
+    :return: List of dictionaries[name=name of file,image_type==category(0 for clean, 1 for dirty),data==data]
+    """
     output = []
     for description in parseDescriptions('description_template.txt'):
         filename, image_type = description
@@ -32,6 +36,9 @@ def prepare_input_data():
 
 
 def build_neural_network():
+    """
+    Builds the neural network using keras sequential API.
+    """
     model = keras.Sequential()
     model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=(227, 227, 3)))
     model.add(MaxPooling2D(pool_size=(2, 2)))
@@ -55,30 +62,26 @@ def build_neural_network():
     model.add(Dense(2, activation = 'softmax'))
     return model
 
-
-def split_input_data(input_data):
-    images = [elem['data'] for elem in input_data]
-    labels = [elem['image_type'] for elem in input_data]
-
-    size = len(images)
-    train_part = int(size * 0.7)
-
-    train_images = np.array(images[:train_part])
-    train_labels = np.array(labels[:train_part])
-
-    test_images = np.array(images[train_part + 1:])
-    test_labels = np.array(labels[train_part + 1:])
-    return (train_images, train_labels), (test_images, test_labels)
-
-
 def evaluate_model(model, test_images, test_labels, train_images, train_labels):
+    """
+    Compiles, fits and trains the network
+    :param model: keras model
+    :param test_images: list of test images
+    :param test_labels: list of test labels
+    :param train_images: list of train images
+    :param train_labels: list of train labels
+    :return: tuple(float,float) loss,accuracy
+    """
     model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
     model.fit(train_images, train_labels, epochs=8)
     return model.evaluate(test_images, test_labels)
 
 
 def main():
-    run_neural_network(prepare_input_data, split_input_data, build_neural_network, evaluate_model)
+    """
+    main function
+    """
+    run_neural_network(prepare_input_data, build_neural_network, evaluate_model)
 
 
 if __name__ == '__main__':

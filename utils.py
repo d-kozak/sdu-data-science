@@ -4,11 +4,9 @@ import numpy as np
 from sklearn.model_selection import StratifiedKFold
 
 
-def run_neural_network(prepare_input_data, split_input_data, build_neural_network, evaluate_model):
+def run_neural_network(prepare_input_data, build_neural_network, evaluate_model):
     input_data = prepare_input_data()
     random.shuffle(input_data)
-
-    #    ((train_images, train_labels), (test_images, test_labels)) = split_input_data(input_data)
 
     images = [elem['data'] for elem in input_data]
     labels = [elem['image_type'] for elem in input_data]

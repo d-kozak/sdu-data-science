@@ -2,7 +2,7 @@ import os
 
 import imageio
 import numpy as np
-
+import scipy
 
 def load_images_from_folder(folder_name):
     return list(
@@ -22,8 +22,8 @@ def prepare_input_data(database_folder='./images/database', ground_truth_folder=
 
     for (image_name, image_data) in input_images:
         image_output = ground_truth[image_name]
-        if image_output is None:
-            raise RuntimeError('Could not find image ' + image_name)
+
+        image_output = scipy.misc.imresize(image_output, (110,110, 3)) / 255
 
         output.append(
             {
@@ -33,6 +33,7 @@ def prepare_input_data(database_folder='./images/database', ground_truth_folder=
             }
         )
     return output
+
 
 def split_input_data(input_data):
     images = [elem['input'] for elem in input_data]
