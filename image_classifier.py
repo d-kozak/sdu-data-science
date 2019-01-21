@@ -6,6 +6,8 @@ import keras
 import matplotlib.pyplot as plt
 import numpy as np
 
+import keras.backend as K
+
 database_folder = './images/database'
 ground_truth_folder = './images/ground_truth_augmented'
 
@@ -86,6 +88,9 @@ def build_neural_network():
 
 
 def evaluate_model(model, test_images, test_labels, train_images, train_labels):
+    def loss_function(y_true, y_pred):
+        return K.mean(K.abs(y_pred - y_true), axis=-1)
+
     model.compile(optimizer='adam', loss=keras.losses.mean_absolute_error, metrics=['accuracy'])
     model.fit(train_images, train_labels, epochs=7)
     return model.evaluate(test_images, test_labels)
@@ -135,7 +140,4 @@ for i in range(len(predictions)):
     plt.imshow(img_out)
 
     plt.savefig(os.path.join(output_folder, str(i) + '.png'))
-    imageio.imsave(os.path.join(output_folder, str(i) + '_in.png'), img_in)
-    imageio.imsave(os.path.join(output_folder, str(i) + '_truth.png'), img_label)
-    imageio.imsave(os.path.join(output_folder, str(i) + '_out.png'), img_out)
     plt.show(block=True)
