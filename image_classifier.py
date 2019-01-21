@@ -96,7 +96,6 @@ def scale_image(image):
     min = np.abs(np.min(image))
     return (image + min) / (max + min)
 
-
 input_data = prepare_input_data()
 random.shuffle(input_data)
 
@@ -117,7 +116,7 @@ output_folder = './images/output/'
 
 try:
     os.mkdir(output_folder)
-except FileNotFoundError:
+except FileExistsError:
     pass
 
 for i in range(len(predictions)):

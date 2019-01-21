@@ -1,12 +1,14 @@
 import random
-from sklearn.model_selection import StratifiedKFold
+
 import numpy as np
+from sklearn.model_selection import StratifiedKFold
+
 
 def run_neural_network(prepare_input_data, split_input_data, build_neural_network, evaluate_model):
     input_data = prepare_input_data()
     random.shuffle(input_data)
 
-#    ((train_images, train_labels), (test_images, test_labels)) = split_input_data(input_data)
+    #    ((train_images, train_labels), (test_images, test_labels)) = split_input_data(input_data)
 
     images = [elem['data'] for elem in input_data]
     labels = [elem['image_type'] for elem in input_data]
@@ -34,3 +36,50 @@ def run_neural_network(prepare_input_data, split_input_data, build_neural_networ
     print("%.2f (+/- %.2f)" % (np.mean(cvlosses), np.std(cvlosses)))
 
     return model
+
+
+def is_in_range(cell, lower_bound, upper_bound):
+    return ((lower_bound <= cell).all()) and ((cell < upper_bound).all())
+
+
+assert is_in_range(
+    np.array([1, 1, 1]),
+    np.array([0, 0, 0]),
+    np.array([2, 2, 2])
+)
+
+assert is_in_range(
+    np.array([0, 0, 0]),
+    np.array([0, 0, 0]),
+    np.array([2, 2, 2])
+)
+
+assert not is_in_range(
+    np.array([2, 2, 2]),
+    np.array([0, 0, 0]),
+    np.array([2, 2, 2])
+)
+
+assert is_in_range(
+    np.array([1, 2, 3]),
+    np.array([1, 2, 1]),
+    np.array([2, 3, 4])
+)
+
+assert is_in_range(
+    np.array([5, 4, 2]),
+    np.array([5, 3, 2]),
+    np.array([6, 5, 3])
+)
+
+assert is_in_range(
+    np.array([5, 6, 8]),
+    np.array([1, 2, 3]),
+    np.array([11, 13, 10])
+)
+
+assert not is_in_range(
+    np.array([5, 6, 8]),
+    np.array([6, 6, 8]),
+    np.array([11, 13, 10])
+)
