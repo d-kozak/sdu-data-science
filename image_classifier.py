@@ -70,13 +70,13 @@ def build_neural_network():
     model.add(keras.layers.Dense(50))
     model.add(keras.layers.Dense(30))
     model.add(keras.layers.Dense(10))
-    #model.add(keras.layers.Dense(75))
+    # model.add(keras.layers.Dense(75))
 
     model.add(keras.layers.Dense(36300))
     model.add(keras.layers.Reshape(target_shape=(110, 110, 3)))
 
     model.add(keras.layers.UpSampling2D(size=(2, 2)))
-    model.add(keras.layers.Deconv2D(3,(8,8)))
+    model.add(keras.layers.Deconv2D(3, (8, 8)))
     # model.add(keras.layers.UpSampling2D(size=(2, 2)))
     # model.add(keras.layers.Conv2D(3, (2, 2), activation='sigmoid'))
     #
@@ -113,6 +113,13 @@ model.save('model')
 
 predictions = model.predict(test_images)
 
+output_folder = './images/output/'
+
+try:
+    os.mkdir(output_folder)
+except FileNotFoundError:
+    pass
+
 for i in range(len(predictions)):
     img_in = test_images[i]
     img_label = test_labels[i]
@@ -127,4 +134,9 @@ for i in range(len(predictions)):
     plt.imshow(img_label)
     f.add_subplot(1, 3, 3)
     plt.imshow(img_out)
+
+    plt.savefig(os.path.join(output_folder, str(i) + '.png'))
+    imageio.imsave(os.path.join(output_folder, str(i) + '_in.png'), img_in)
+    imageio.imsave(os.path.join(output_folder, str(i) + '_truth.png'), img_label)
+    imageio.imsave(os.path.join(output_folder, str(i) + '_out.png'), img_out)
     plt.show(block=True)
