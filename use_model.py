@@ -4,7 +4,12 @@ import matplotlib.pyplot as plt
 import os
 from keras.models import load_model
 
-from image_classifier import prepare_input_data, split_input_data
+from image_classifier_utils import prepare_input_data, split_input_data
+
+def scale_image(image):
+    max = np.max(image)
+    min = np.abs(np.min(image))
+    return (image + min) / (max + min)
 
 output_folder = './images/output/'
 

@@ -1,6 +1,7 @@
 import os
 
 import imageio
+import numpy as np
 
 
 def load_images_from_folder(folder_name):
@@ -32,3 +33,17 @@ def prepare_input_data(database_folder='./images/database', ground_truth_folder=
             }
         )
     return output
+
+def split_input_data(input_data):
+    images = [elem['input'] for elem in input_data]
+    labels = [elem['output'] for elem in input_data]
+
+    size = len(images)
+    train_part = int(size * 0.7)
+
+    train_images = np.array(images[:train_part])
+    train_labels = np.array(labels[:train_part])
+
+    test_images = np.array(images[train_part + 1:])
+    test_labels = np.array(labels[train_part + 1:])
+    return (train_images, train_labels), (test_images, test_labels)

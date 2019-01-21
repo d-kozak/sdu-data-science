@@ -8,22 +8,7 @@ import numpy as np
 
 import keras.backend as K
 
-from image_classifier_utils import prepare_input_data
-
-
-def split_input_data(input_data):
-    images = [elem['input'] for elem in input_data]
-    labels = [elem['output'] for elem in input_data]
-
-    size = len(images)
-    train_part = int(size * 0.7)
-
-    train_images = np.array(images[:train_part])
-    train_labels = np.array(labels[:train_part])
-
-    test_images = np.array(images[train_part + 1:])
-    test_labels = np.array(labels[train_part + 1:])
-    return (train_images, train_labels), (test_images, test_labels)
+from image_classifier_utils import prepare_input_data, split_input_data
 
 
 def build_neural_network():
@@ -63,12 +48,6 @@ def evaluate_model(model, test_images, test_labels, train_images, train_labels):
     model.fit(train_images, train_labels, epochs=7)
     return model.evaluate(test_images, test_labels)
 
-
-def scale_image(image):
-    max = np.max(image)
-    min = np.abs(np.min(image))
-    return (image + min) / (max + min)
-
 input_data = prepare_input_data()
 random.shuffle(input_data)
 
@@ -97,7 +76,6 @@ for i in range(len(predictions)):
     img_label = test_labels[i]
 
     img_out = predictions[i]
-    img_out = scale_image(img_out)
 
     f = plt.figure()
     f.add_subplot(1, 3, 1)
