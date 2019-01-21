@@ -376,42 +376,43 @@ import os
 #
 # supervised_10 = supervised
 # imageio.imwrite('./images/10_SVM.jpg',palette[supervised])
-# #11----------------------------------------------------------------------------------------------
-# classes = {'wall': 0, 'polyp': 1, 'dirt': 2, 'dark': 3, 'hole': 4}
-# n_classes = len(classes)
-# palette = np.uint8([[234, 164, 128], [234, 112, 78], [234, 207, 79], [0, 0, 0], [67,52,31]])
-#
-# img = io.imread('images/11.jpg')
-# img2 = img
-# rows, cols, bands = img.shape
-#
-#
-# X = img.reshape(rows*cols, bands)
-# kmeans = KMeans(n_clusters=n_classes, random_state=0).fit(X)
-#
-# supervised = n_classes*np.ones(shape=(rows, cols), dtype=np.int)
-# supervised[40:190, 0:50] = classes['wall']
-# supervised[90:160, 60:100] = classes['polyp']
-# #supervised[110:125, 148:164] = classes['dirt']
-# supervised[100:175, 120:165] = classes['hole']
-# supervised[0:10, 0:10] = classes['dark']
-#
-# y = supervised.ravel()
-# train = np.flatnonzero(supervised < n_classes)
-# test = np.flatnonzero(supervised == n_classes)
-#
-# clf = SVC()
-# clf.fit(X[train], y[train])
-# y[test] = clf.predict(X[test])
-# supervised = y.reshape(rows, cols)
-# #io.imshow(palette[supervised])
-# plt.imshow(img2)
-# plt.show()
-# plt.imshow(palette[supervised], cmap=plt.cm.binary)
-# plt.show()
-#
-# supervised_11 = supervised
-# imageio.imwrite('./images/11_SVM.jpg',palette[supervised])
+#11----------------------------------------------------------------------------------------------
+classes = {'wall': 0, 'polyp': 1, 'dirt': 2, 'dark': 3, 'hole': 4}
+n_classes = len(classes)
+palette = np.uint8([[234, 164, 128], [234, 112, 78], [234, 207, 79], [0, 0, 0], [67,52,31]])
+
+img = io.imread('images/11.jpg')
+img2 = img
+rows, cols, bands = img.shape
+
+
+X = img.reshape(rows*cols, bands)
+kmeans = KMeans(n_clusters=n_classes, random_state=0).fit(X)
+
+supervised = n_classes*np.ones(shape=(rows, cols), dtype=np.int)
+supervised[40:190, 0:50] = classes['wall']
+supervised[90:160, 65:102] = classes['polyp']
+#supervised[110:125, 148:164] = classes['dirt']
+supervised[100:175, 120:165] = classes['hole']
+supervised[160:210, 60:150] = classes['hole']
+supervised[0:10, 0:10] = classes['dark']
+
+y = supervised.ravel()
+train = np.flatnonzero(supervised < n_classes)
+test = np.flatnonzero(supervised == n_classes)
+
+clf = SVC()
+clf.fit(X[train], y[train])
+y[test] = clf.predict(X[test])
+supervised = y.reshape(rows, cols)
+#io.imshow(palette[supervised])
+plt.imshow(img2)
+plt.show()
+plt.imshow(palette[supervised])
+plt.show()
+
+supervised_11 = supervised
+imageio.imwrite('./images/11_SVM.jpg',palette[supervised])
 # #12----------------------------------------------------------------------------------------------
 # classes = {'wall': 0, 'polyp': 1, 'dirt': 2, 'dark': 3, 'hole': 4}
 # n_classes = len(classes)
@@ -1018,44 +1019,6 @@ import os
 #
 # supervised_27 = supervised
 # imageio.imwrite('./images/27_SVM.jpg',palette[supervised])
-#28---------------------------------------------------------------------------------------------
-classes = {'wall': 0, 'polyp': 1, 'dirt': 2, 'dark': 3, 'hole': 4}
-n_classes = len(classes)
-palette = np.uint8([[234, 164, 128], [234, 112, 78], [234, 207, 79], [0, 0, 0], [67,52,31]])
-
-img = io.imread('images/28.jpg')
-img2 = img
-rows, cols, bands = img.shape
-
-
-X = img.reshape(rows*cols, bands)
-kmeans = KMeans(n_clusters=n_classes, random_state=0).fit(X)
-
-supervised = n_classes*np.ones(shape=(rows, cols), dtype=np.int)
-supervised[40:140, 0:200] = classes['wall']
-supervised[150:210, 0:140] = classes['wall']
-supervised[5:50, 20:200] = classes['wall']
-supervised[150:215, 145:225] = classes['polyp']
-#supervised[90:110, 30:60] = classes['dirt']
-#supervised[100:190, 0:25] = classes['hole']
-supervised[0:14, 0:15] = classes['dark']
-
-y = supervised.ravel()
-train = np.flatnonzero(supervised < n_classes)
-test = np.flatnonzero(supervised == n_classes)
-
-clf = SVC()
-clf.fit(X[train], y[train])
-y[test] = clf.predict(X[test])
-supervised = y.reshape(rows, cols)
-#io.imshow(palette[supervised])
-plt.imshow(img2)
-plt.show()
-plt.imshow(palette[supervised], cmap=plt.cm.binary)
-plt.show()
-
-supervised_28 = supervised
-imageio.imwrite('./images/28_SVM.jpg',palette[supervised])
 # #29---------------------------------------------------------------------------------------------
 # classes = {'wall': 0, 'polyp': 1, 'dirt': 2, 'dark': 3, 'hole': 4}
 # n_classes = len(classes)
@@ -1882,6 +1845,6 @@ imageio.imwrite('./images/28_SVM.jpg',palette[supervised])
 # supervised_50 = supervised
 # imageio.imwrite('./images/50_SVM.jpg',palette[supervised])
 #
- os.system("ground_truth_generator.py")
+#os.system("ground_truth_generator.py")
 
 print("end")
