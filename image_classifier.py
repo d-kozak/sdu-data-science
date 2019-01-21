@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 database_folder = './images/database'
-ground_truth_folder = './images/ground_truth'
+ground_truth_folder = './images/ground_truth_augmented'
 
 
 def prepare_input_data():

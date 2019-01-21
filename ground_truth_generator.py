@@ -1,7 +1,7 @@
 import os, os.path
 from PIL import Image, ImageOps
 
-images_directory = './images'
+images_directory = './images/ground_truth_new'
 images_names_array = [name for name in os.listdir(images_directory)
                       if os.path.isfile(os.path.join(images_directory, name)) and
                       len(name.split('_')) == 2]
@@ -9,7 +9,7 @@ images_names_array = [name for name in os.listdir(images_directory)
 print('\nThere are ' + str(len(images_names_array)) + ' images as a source for ground-truth.\n')
 
 # check (and create if necessary) output folder for ground-truth images
-output_directory = "./images/ground_truth"
+output_directory = "./images/ground_truth_augmented"
 if not os.path.exists(output_directory):
     os.makedirs(output_directory)
 
