@@ -44,15 +44,9 @@ def change_colors(image):
     return image
 
 
-images = os.listdir(input_folder)
-i = 0
-size = len(images)
-for image_name in images:
-    if not '_SVM' in image_name:
-        print(image_name)
-        continue
-    print('%s/%s %s ' % (str(i), str(size), image_name))
+images = list(filter(lambda name: '_SVM' in name, os.listdir(input_folder)))
+for index, image_name in enumerate(images):
+    print('%s/%s %s ' % (str(index), str(len(images)), image_name))
     image = imageio.imread(os.path.join(input_folder, image_name))
     changed = change_colors(image)
     imageio.imsave(os.path.join(output_folder, image_name), changed)
-    i += 1
