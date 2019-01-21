@@ -7,6 +7,7 @@ nums.model
 /images/ground_truth/
 /images/ground_truth_new/
 /images/ground_truth_augmented/
+/images/output
 
 # File-based project format
 *.iws
