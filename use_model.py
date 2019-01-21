@@ -27,4 +27,3 @@ for (i, (input, ground_truth, output)) in enumerate(zip(test_images, test_labels
     plt.imshow(output)
 
     plt.savefig(os.path.join(output_folder, str(i) + '.png'))
-    plt.show(block=True)
