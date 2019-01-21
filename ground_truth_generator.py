@@ -16,7 +16,7 @@ if not os.path.exists(output_directory):
 for image_name in images_names_array:
     name_without_extension, extension = image_name.split('.')
     image = Image.open(os.path.join(images_directory, image_name))
-
+    extension = 'png'
     image.save(output_directory + '/' + name_without_extension + '.' + extension)
 
     flipped_image = ImageOps.mirror(image)

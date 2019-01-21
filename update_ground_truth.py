@@ -49,4 +49,5 @@ for index, image_name in enumerate(images):
     print('%s/%s %s ' % (str(index), str(len(images)), image_name))
     image = imageio.imread(os.path.join(input_folder, image_name))
     changed = change_colors(image)
+    image_name = image_name.split('.')[0] + '.png'
     imageio.imsave(os.path.join(output_folder, image_name), changed)
