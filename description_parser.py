@@ -4,6 +4,9 @@ DIRTY = 1
 
 # picture size 227 * 227 * 3 == 154 587
 class ImageData():
+    """
+    This data class represents one loaded image in memory
+    """
     def __init__(self, filename, type):
         self.type = type
         self.filename = filename

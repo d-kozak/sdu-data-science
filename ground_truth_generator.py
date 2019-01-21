@@ -1,6 +1,9 @@
 import os, os.path
 from PIL import Image, ImageOps
 
+# This script performs image augmentation for input images found in ./images folder. It does not augment the SVM images
+# It creates rotated and flipped versions of the original image.
+
 images_directory = './images/ground_truth_new'
 images_names_array = [name for name in os.listdir(images_directory)
                       if os.path.isfile(os.path.join(images_directory, name)) and

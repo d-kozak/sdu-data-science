@@ -12,6 +12,12 @@ def load_images_from_folder(folder_name):
 
 
 def prepare_input_data(database_folder='./images/database', ground_truth_folder='./images/ground_truth_augmented'):
+    """
+    Loads images from input folders and groups them with their labels.
+    :param database_folder:
+    :param ground_truth_folder:
+    :return:
+    """
     def remove_svm_from_name(input):
         name, data = input
         return name.replace('_SVM', ''), data
@@ -36,6 +42,11 @@ def prepare_input_data(database_folder='./images/database', ground_truth_folder=
 
 
 def split_input_data(input_data):
+    """
+    Splits the input data into training and test set using 70:30 ratio.
+    :param input_data: data to split tuple of (images,labels)
+    :return: splitted data tuple of tuples (train(images,labels)test(images,labels))
+    """
     images = [elem['input'] for elem in input_data]
     labels = [elem['output'] for elem in input_data]
 

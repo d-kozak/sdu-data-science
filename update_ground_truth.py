@@ -3,6 +3,8 @@ import os
 import imageio
 import numpy as np
 
+# Processes files from images and thresholds them into values, which are more distant in RGB model
+
 from utils import is_in_range
 
 input_folder = './images/'

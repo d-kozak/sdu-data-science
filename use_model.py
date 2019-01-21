@@ -1,17 +1,23 @@
-import numpy as np
-import random
-import matplotlib.pyplot as plt
 import os
-import  imageio
+import random
+
+import imageio
+import matplotlib.pyplot as plt
+import numpy as np
 from keras.models import load_model
 
 from image_classifier_utils import prepare_input_data, split_input_data
+
+
+# Uses model from image_classifier and shows the results for randomly selected test images
+
 
 def scale_image(image):
     max = np.max(image)
     min = np.abs(np.min(image))
     scaled = (image + min) / (max + min)
     return scaled.astype(np.int)
+
 
 output_folder = './images/output/'
 
@@ -25,7 +31,6 @@ random.shuffle(input_data)
 # predictions = model.predict(test_images)
 
 for (i, (input, ground_truth)) in enumerate(zip(test_images, test_labels)):
-
     output = model.predict(np.array([input]))[0]
     f = plt.figure()
     f.add_subplot(1, 3, 1)
@@ -35,5 +40,5 @@ for (i, (input, ground_truth)) in enumerate(zip(test_images, test_labels)):
     f.add_subplot(1, 3, 3)
     plt.imshow(output)
     plt.savefig(os.path.join(output_folder, str(i) + '_fig.png'))
-    imageio.imsave(os.path.join(output_folder,str(i) + '_out.png'),output)
+    imageio.imsave(os.path.join(output_folder, str(i) + '_out.png'), output)
     plt.close(f)

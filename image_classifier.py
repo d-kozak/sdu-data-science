@@ -1,17 +1,16 @@
 import os
 import random
 
-import imageio
 import keras
 import matplotlib.pyplot as plt
-import numpy as np
-
-import keras.backend as K
 
 from image_classifier_utils import prepare_input_data, split_input_data
 
 
 def build_neural_network():
+    """
+    Builds the neural network using keras sequential API.
+    """
     model = keras.Sequential()
     model.add(keras.layers.Conv2D(128, (3, 3), activation='relu', padding='same'))
     model.add(keras.layers.Conv2D(64, (3, 3), activation='relu', padding='same'))
@@ -35,19 +34,23 @@ def build_neural_network():
 
     model.add(keras.layers.Dense(36300))
     model.add(keras.layers.Reshape(target_shape=(110, 110, 3)))
-
-    # model.add(keras.layers.UpSampling2D(size=(2, 2)))
-
     return model
 
 
 def evaluate_model(model, test_images, test_labels, train_images, train_labels):
-    def loss_function(y_true, y_pred):
-        return K.mean(K.abs(y_pred - y_true), axis=-1)
-
+    """
+    Compiles, fits and trains the network
+    :param model: keras model
+    :param test_images: list of test images
+    :param test_labels: list of test labels
+    :param train_images: list of train images
+    :param train_labels: list of train labels
+    :return: tuple(float,float) loss,accuracy
+    """
     model.compile(optimizer='adam', loss=keras.losses.mean_squared_error, metrics=['accuracy'])
     model.fit(train_images, train_labels, epochs=100)
     return model.evaluate(test_images, test_labels)
+
 
 input_data = prepare_input_data()
 random.shuffle(input_data)

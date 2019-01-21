@@ -5,6 +5,13 @@ from sklearn.model_selection import StratifiedKFold
 
 
 def run_neural_network(prepare_input_data, build_neural_network, evaluate_model):
+    """
+    Performs cross validation for the clean classifier, using 5 splits.
+    :param prepare_input_data: callback to prepare input data
+    :param build_neural_network: callback to build the neural network
+    :param evaluate_model: callback to prepare and evaluate the model
+    :return:
+    """
     input_data = prepare_input_data()
     random.shuffle(input_data)
 
