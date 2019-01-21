@@ -17,7 +17,7 @@ random.shuffle(input_data)
 
 predictions = model.predict(test_images)
 
-for (input, ground_truth, output) in zip(test_images, test_labels, predictions):
+for (i, (input, ground_truth, output)) in enumerate(zip(test_images, test_labels, predictions)):
     f = plt.figure()
     f.add_subplot(1, 3, 1)
     plt.imshow(input)
