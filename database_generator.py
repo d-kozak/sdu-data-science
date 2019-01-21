@@ -2,7 +2,8 @@ import os, os.path
 from PIL import Image, ImageOps
 
 images_directory = './images'
-images_names_array = [name for name in os.listdir(images_directory) if os.path.isfile(os.path.join(images_directory, name))]
+images_names_array = [name for name in os.listdir(images_directory) if
+                      os.path.isfile(os.path.join(images_directory, name)) and not '_SVM' in name]
 
 print('\nThere are ' + str(len(images_names_array)) + ' images as a source for database.\n')
 
